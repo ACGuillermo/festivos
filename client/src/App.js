@@ -1,27 +1,46 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
+import axios from 'axios';
+import { DateTime } from 'luxon';
 
-const { DateTime } = require("luxon");
 
-const diffDates = () =>{
-  return DateTime.fromISO('2020-08-15').diff(DateTime.local(), ['months', 'days', 'hours', 'minutes','seconds'])
+const diffDates = (dateHoliday) =>{
+  const dateNow = DateTime.local();
+  const dateNextHoliday = DateTime.fromISO(dateHoliday) ;
+  const diff = dateNextHoliday.diff(dateNow, ['months', 'days', 'hours', 'minutes','seconds'])
+  if(diff.days === 0 && diff.hours < 0 && diff.hours > -24) return 'ES FIESTA!!'
+  else if(dateNow > dateNextHoliday) return 'Pasado'
+  return diff
 }
 
 const App = () => {
-  const [ holidayDates, setHolidayDates ] = useState([])
-  const [ untilHoliday, setUntilHoliday ] = useState(diffDates())
-  
+  const [ loading, setLoading ] = useState(true)
+  const [ holidayDate, setHolidayDate ] = useState({})
+  const [ untilHoliday, setUntilHoliday ] = useState()
+
+  useEffect(() => {
+    axios.get('http://localhost:1337')
+      .then((response) => {
+        setHolidayDate(response.data)
+      })
+  }, [])
+
   useEffect(() => {
     setTimeout(() => {
-      setUntilHoliday(diffDates())
+      setUntilHoliday(diffDates(holidayDate.festivo))
+      setLoading(false)
     }, 1000);
 
-  }, [untilHoliday])
+  }, [untilHoliday, holidayDate])
 
+  const renderTime = () => {
+    if(loading) return <h1>spinner</h1>
+    return typeof(untilHoliday) === 'string' ? `${untilHoliday}` : `Queda ${untilHoliday.months} meses, ${untilHoliday.days} días, ${untilHoliday.hours} horas, ${untilHoliday.minutes} minutos y ${parseInt(untilHoliday.seconds)} segundos`
+  }
 
   return (
     <div className="App">
-      {untilHoliday && `Queda ${untilHoliday.months} meses, ${untilHoliday.days} días, ${untilHoliday.hours} horas, ${untilHoliday.minutes} minutos y ${parseInt(untilHoliday.seconds)} segundos`}
+      {renderTime()}
     </div>
   );
 }

@@ -15,7 +15,9 @@ app.use(morgan('common'));
 app.use(helmet());
 app.use(cors());
 
-const festivo = '15-08-2020';
+// Fecha pruebas
+const festivo = '12-08-2020';
+
 const toDate = (dateStr) => {
   const [day, month, year] = dateStr.split('-');
   return new Date(year, month - 1, day);
@@ -23,7 +25,7 @@ const toDate = (dateStr) => {
 
 app.get('/', (req, res) => {
   res.json({
-    message: toDate(festivo),
+    festivo: toDate(festivo),
   });
 });
 
