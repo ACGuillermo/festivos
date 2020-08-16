@@ -1,0 +1,6 @@
+.si-no {
+    font-weight: 700;
+    font-size: calc(2rem + 6vmin);
+    text-align: center;
+    margin-bottom: 0;
+}
