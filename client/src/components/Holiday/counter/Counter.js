@@ -10,7 +10,7 @@ const Counter = ({holiday, untilHoliday}) => {
       }
     return(
         <>
-            <p className="si-no">{holiday ? 'SI 🥳🎉' : 'NO'}</p>
+            <p className="si-no">{holiday ? 'SI 🥳🎉' : 'NO 😞'}</p>
             {renderTime()}
         </>
     )
