@@ -35,7 +35,7 @@ const getHoliday = (clientDate, clientMunicipio) => {
   // Festivos filtered by municipio.
   const festivoFiltered = festivos.filter((f) => f.municipios.filter((a) => a === clientMunicipio).length > 0);
 
-  // Control municipio doesnt exist
+  // TODO: Control municipio doesnt exist
   // console.log(festivoFiltered[0].municipios)
   let holiday;
 

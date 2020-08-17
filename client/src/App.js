@@ -1,12 +1,8 @@
 import React, { useState } from 'react';
 import './App.css';
 
-
 import LocationSearch from './components/LocationSearch/LocationSearch'
 import Holiday from './components/Holiday/Holiday'
-
-
-
 
 const App = () => {
   
