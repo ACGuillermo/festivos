@@ -5,8 +5,10 @@ const morgan = require('morgan');
 const helmet = require('helmet');
 const cors = require('cors');
 const axios = require('axios');
-const { festivos } = require('./json/datesNoRepetidas.json');
+let municipios = require('./json/municipiosDates.json');
 
+const dataMap = new Map(municipios.map((i) => [i.name, i.festivos]));
+municipios = null;
 const middlewares = require('./middlewares');
 
 // eslint-disable-next-line import/no-extraneous-dependencies
@@ -20,40 +22,31 @@ app.use(helmet());
 app.use(cors());
 app.use(express.json());
 
-const toDate = (dateStr) => {
-  const [day, month, year] = dateStr.split('-');
-  return new Date(year, month - 1, day);
-};
+const getHoliday = (clientDate, municipio) => {
+  if (!dataMap.has(municipio)) {
+    const error = new Error(`${municipio} no existe.`);
+    return error;
+  }
 
-app.get('/', (req, res) => {
-  res.json({
-    festivo: toDate(festivos),
-  });
-});
+  const municipioHolidays = dataMap.get(municipio);
 
-const getHoliday = (clientDate, clientMunicipio) => {
-  // Festivos filtered by municipio.
-  const festivoFiltered = festivos.filter((f) => f.municipios.filter((a) => a === clientMunicipio).length > 0);
-
-  // TODO: Control municipio doesnt exist
-  // console.log(festivoFiltered[0].municipios)
   let holiday;
-
-  // Get the next festivo date
-  for (let i = 0; i < festivoFiltered.length; i += 1) {
-    const festivo = DateTime.fromISO(festivoFiltered[i].value);
+  for (let i = 0; i < municipioHolidays.length; i += 1) {
+    const festivo = DateTime.fromISO(municipioHolidays[i]);
     const diff = festivo.diff(clientDate, ['months', 'days', 'hours', 'minutes', 'seconds']);
+
     if (festivo > clientDate || (diff.hours > -24 && diff.days === 0 && diff.months === 0)) {
-      holiday = festivoFiltered[i].value;
+      holiday = municipioHolidays[i];
       break;
     } else {
       holiday = '2020-01-01';
     }
   }
+
   return holiday;
 };
 
-app.post('/', (req, res) => {
+app.post('/', (req, res, next) => {
   // Client data
   const clientDate = DateTime.fromISO(req.body.date);
   const clientMunicipio = req.body.municipio;
@@ -71,6 +64,10 @@ app.post('/', (req, res) => {
         });
       });
   } else {
+    if (typeof (getHoliday(clientDate, clientMunicipio)) === 'object') {
+      res.status(404);
+      next(getHoliday(clientDate, clientMunicipio));
+    }
     nextFestivoDate = getHoliday(clientDate, clientMunicipio);
     res.send({
       festivo: nextFestivoDate,
