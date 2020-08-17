@@ -13,7 +13,12 @@ const LocationSearch = ({coord, municipio, handleFormSubmit}) => {
             {!coord && !municipio 
             
                 ?<form onSubmit={handleFormSubmit(input)}>
-                    <input type="text" value={input} placeholder="¿Dónde estás?" onChange={handleInputChange}/>
+                    <input 
+                        type="text" 
+                        value={input} 
+                        placeholder="¿Dónde estás?" 
+                        onChange={handleInputChange}
+                    />
                 </form>
 
                 : null 
