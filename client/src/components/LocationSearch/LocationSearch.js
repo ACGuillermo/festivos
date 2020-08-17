@@ -1,12 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import './locationSearch.css';
 
 const LocationSearch = ({coord, municipio, handleFormSubmit}) => {
     const [ input, setInput ] = useState('');
 
-    const handleInputChange = (e) => {
+    const handleInputChange = useCallback((e) => {
         setInput(e.target.value)
-    }
+    }, [])
     return(
         <>
             {/* <button onClick={getLocation}>Compartir tu ubicación</button> */}
