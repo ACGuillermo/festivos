@@ -28,7 +28,7 @@ const Holiday = ({coord, municipio}) => {
             && parseInt(diff.seconds) !== 0)
     }
 
-    const checkIfNowIsHoliday = (dateNow, dateNextHoliday, dateNextDayAfterHoliday) => {
+    const diffDates = (dateNow, dateNextHoliday, dateNextDayAfterHoliday) => {
     // Diff between now & next holiday - now & day after next holiday
     const diff = dateNextHoliday.diff(dateNow, ['months', 'days', 'hours', 'minutes','seconds'])
     const diffDayAfterHoliday = dateNextDayAfterHoliday.diff(dateNow, ['months', 'days', 'hours', 'minutes','seconds'])
@@ -50,13 +50,13 @@ const Holiday = ({coord, municipio}) => {
     } 
     }
 
-    const diffDates = (dateHoliday) =>{
+    const diffNowNextHoliday = (dateHoliday) =>{
     // Dates Now - Next holiday - Day after next holiday
     const dateNow =  DateTime.local();
     const dateNextHoliday = DateTime.fromISO(dateHoliday);
     const dateNextDayAfterHoliday = DateTime.fromISO(dateNextHoliday.plus({days: 1}).toISODate())
 
-    return checkIfNowIsHoliday(dateNow, dateNextHoliday, dateNextDayAfterHoliday)
+    return diffDates(dateNow, dateNextHoliday, dateNextDayAfterHoliday)
     
     }
 
@@ -86,7 +86,7 @@ const Holiday = ({coord, municipio}) => {
         }
         setTimeout(() => {
             console.log(holidayDate)
-            setUntilHoliday(diffDates(holidayDate))
+            setUntilHoliday(diffNowNextHoliday(holidayDate))
             if(loading) setLoading(false)
         }, 1000);
 
