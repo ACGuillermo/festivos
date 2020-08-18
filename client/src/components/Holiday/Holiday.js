@@ -12,6 +12,7 @@ const Holiday = () => {
     const [ nextDay, setNextDay ] = useState(false)
     const [ holidayDate, setHolidayDate ] = useState({})
     const [ untilHoliday, setUntilHoliday ] = useState(null)
+    const [ error, setError ] = useState(null)
 
     let { municipio } = useParams();
 
@@ -67,13 +68,17 @@ const Holiday = () => {
     // Fetch next holiday date. Only when coord or municipio is set and when nextDay changes
     useEffect(() => {
         (async() => {
-        const res = await axios.post('http://localhost:1337', {
-        date: DateTime.local().toISO(),
-        municipio: municipio.replace('_', ' '),
-        // coords: coord
-        })
-        setHolidayDate(res.data.festivo)
-        console.log('fetching')
+            try {
+                console.log('fetching')
+                const res = await axios.post('http://localhost:1337', {
+                    date: DateTime.local().toISO(),
+                    municipio: municipio.replace('_', ' '),
+                    // coords: coord
+                })
+                setHolidayDate(res.data.festivo)
+            } catch (e) {
+                setError(e.response.data.message)
+            }
         })()
     }, [ municipio, nextDay])
 
@@ -97,9 +102,11 @@ const Holiday = () => {
 
     return(
         <>
-            {loading 
-                ? <Loading />
-                : <Counter holiday={holiday} loading={loading} untilHoliday={untilHoliday} />
+            {error
+                ? <h3>{error}</h3>
+                :loading
+                    ? <Loading />
+                    : <Counter holiday={holiday} loading={loading} untilHoliday={untilHoliday} error={error}/>
             }
         </>
     )
