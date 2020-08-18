@@ -9,6 +9,7 @@ let municipios = require('./json/municipiosDates.json');
 
 const dataMap = new Map(municipios.map((i) => [i.name, i.festivos]));
 municipios = null;
+
 const middlewares = require('./middlewares');
 
 // eslint-disable-next-line import/no-extraneous-dependencies
