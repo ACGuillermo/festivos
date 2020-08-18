@@ -1,13 +1,15 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route
+} from "react-router-dom";
 import './App.css';
 
 import LocationSearch from './components/LocationSearch/LocationSearch'
 import Holiday from './components/Holiday/Holiday'
 
 const App = () => {
-  
-  const [ coord, setCoord ] = useState(null)
-  const [ municipio, setMunicipio ] = useState(null)
   const [ theme, setTheme ] = useState(null)
 
   const handleChangeTheme = (e) => {
@@ -15,6 +17,7 @@ const App = () => {
     setTheme(newColorScheme)
   }
 
+  // Get browser theme (dark/light) and change web theme.
   useEffect(()=>{
     if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
       document.body.style = 'background: black; color: whitesmoke;'
@@ -27,27 +30,19 @@ const App = () => {
     return window.matchMedia('(prefers-color-scheme: dark)').removeEventListener('change',handleChangeTheme)
   },[theme])
 
-  const getLocation = () => {
-    if(navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(pos => {
-        console.log(pos)
-        setCoord({
-          lat: pos.coords.latitude,
-          lng: pos.coords.longitude,
-        })
-      })
-    }
-  }
-
-  const handleFormSubmit = useCallback((input) => (e) => {
-    e.preventDefault()
-    setMunicipio(input)
-  }, [])
 
   return (
     <div className="App">
-      <LocationSearch coord={coord} municipio={municipio} handleFormSubmit={handleFormSubmit}/>
-      <Holiday coord={coord} municipio={municipio} />
+      <Router >
+        <Switch >
+          <Route path="/" exact>
+            <LocationSearch />
+          </Route>
+          <Route path="/:municipio">
+            <Holiday />
+          </Route>
+        </Switch>
+      </Router>
     </div>
   );
 }

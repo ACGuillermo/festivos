@@ -1,10 +1,10 @@
 import React from 'react';
 
-const Loading = ({coord, municipio}) => {
+const Loading = () => {
 
     return(
         <>
-            {coord || municipio ? <h1>Puede...</h1> : null}
+           <h1>Puede...</h1>
         </>
     )
 }
