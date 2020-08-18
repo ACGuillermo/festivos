@@ -64,11 +64,10 @@ app.post('/', (req, res, next) => {
           festivo: nextFestivoDate,
         });
       });
+  } else if (typeof (getHoliday(clientDate, clientMunicipio)) === 'object') {
+    res.status(404);
+    next(getHoliday(clientDate, clientMunicipio));
   } else {
-    if (typeof (getHoliday(clientDate, clientMunicipio)) === 'object') {
-      res.status(404);
-      next(getHoliday(clientDate, clientMunicipio));
-    }
     nextFestivoDate = getHoliday(clientDate, clientMunicipio);
     res.send({
       festivo: nextFestivoDate,
