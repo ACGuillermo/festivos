@@ -85,9 +85,8 @@ const Holiday = ({coord, municipio}) => {
             return
         }
         setTimeout(() => {
-            console.log(holidayDate)
             setUntilHoliday(diffNowNextHoliday(holidayDate))
-            if(loading) setLoading(false)
+            setLoading(false)
         }, 1000);
 
     }, [untilHoliday, holidayDate])

@@ -10,6 +10,11 @@ const App = () => {
   const [ municipio, setMunicipio ] = useState(null)
   const [ theme, setTheme ] = useState(null)
 
+  const handleChangeTheme = (e) => {
+    const newColorScheme = e.matches ? "dark" : "light";
+    setTheme(newColorScheme)
+  }
+
   useEffect(()=>{
     if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
       document.body.style = 'background: black; color: whitesmoke;'
@@ -17,10 +22,9 @@ const App = () => {
       document.body.style = 'background: whitesmoke; color: black;'
     }
 
-    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
-      const newColorScheme = e.matches ? "dark" : "light";
-      setTheme(newColorScheme)
-  });
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', handleChangeTheme)
+
+    return window.matchMedia('(prefers-color-scheme: dark)').removeEventListener('change',handleChangeTheme)
   },[theme])
 
   const getLocation = () => {
